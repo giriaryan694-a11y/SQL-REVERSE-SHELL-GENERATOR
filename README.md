@@ -1,7 +1,7 @@
 # **🔥 SQL Reverse Shell Generator**
 **Made by [Aryan Giri](https://github.com/giriaryan694-a11y) | Elite Red Team Tool**
 
-> *"Automate SQLi payloads like a pro. For pentesters, by pentesters."*
+> *"Automate SQLi payloads like a pro. For pentesters, by pentester."*
 
 ---
 
