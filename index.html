@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Reverse Shell Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .credit {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        .db-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .db-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0.8rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        .db-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        .db-button:active {
+            transform: translateY(0);
+        }
+        .mysql { background-color: #e74c3c; }
+        .mysql:hover { background-color: #c0392b; }
+        .postgres { background-color: #27ae60; }
+        .postgres:hover { background-color: #219653; }
+        .mssql { background-color: #9b59b6; }
+        .mssql:hover { background-color: #8e44ad; }
+        .sqlite { background-color: #f39c12; }
+        .sqlite:hover { background-color: #e67e22; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SQL Reverse Shell Generator</h1>
+        <p class="credit">Made by Aryan Giri</p>
+        <p>Select a database to generate reverse shell payloads:</p>
+        <div class="db-grid">
+            <a href="mysql/" class="db-button mysql">MySQL</a>
+            <a href="postgres/" class="db-button postgres">PostgreSQL</a>
+            <a href="mssql/" class="db-button mssql">MSSQL</a>
+            <a href="sqlite/" class="db-button sqlite">SQLite</a>
+        </div>
+    </div>
+</body>
+</html>
